@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "ToonTanksPlayerController.h"
 #include "Tank.h"
+#include "Turret.h"
 
 void AToonTanksGameMode::BeginPlay()
 {
@@ -14,20 +15,34 @@ void AToonTanksGameMode::BeginPlay()
 
 void AToonTanksGameMode::ActorDied(AActor *DeadActor)
 {
-    if (Tank == Cast<ATank>(DeadActor))
+    ABasePawn *DeadPawn = Cast<ABasePawn>(DeadActor);
+    if (!DeadPawn)
+        return;
+
+    DeadPawn->HandleDestruction();
+
+    if (DeadPawn->IsA(ATank::StaticClass()))
     {
-        Tank->HandleDestruction();
         PlayerController->SetPlayerEnabledState(false);
+        GameOver(false);
         return;
     }
-    ABasePawn *DeadPawn = Cast<ABasePawn>(DeadActor);
-    DeadPawn->HandleDestruction();
+    if (DeadPawn->IsA(ATurret::StaticClass()))
+    {
+        TargetTurrets--;
+    }
+
+    if (TargetTurrets <= 0)
+    {
+        GameOver(true);
+    }
 }
 
 void AToonTanksGameMode::HandleGameStart()
 {
     StartGame();
 
+    TargetTurrets = GetTargetTurretCount();
     Tank = Cast<ATank>(UGameplayStatics::GetPlayerPawn(this, 0));
     PlayerController = Cast<AToonTanksPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 
@@ -45,4 +60,12 @@ void AToonTanksGameMode::HandleGameStart()
             StartDelay,
             false);
     }
+}
+
+int32 AToonTanksGameMode::GetTargetTurretCount()
+{
+    TArray<AActor *> Turrets;
+    UGameplayStatics::GetAllActorsOfClass(this, ATurret::StaticClass(), Turrets);
+
+    return Turrets.Num();
 }

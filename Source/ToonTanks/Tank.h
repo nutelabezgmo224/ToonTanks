@@ -21,6 +21,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void HandleDestruction() override;
+	bool bAlive = true;
 
 protected:
 	// Called when the game starts or when spawned

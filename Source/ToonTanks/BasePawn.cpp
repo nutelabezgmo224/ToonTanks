@@ -3,6 +3,7 @@
 #include "BasePawn.h"
 #include "Projectile.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABasePawn::ABasePawn()
@@ -40,10 +41,22 @@ void ABasePawn::Fire()
 		ProjectileClass,
 		ProjectileSpawnPoint->GetComponentLocation(),
 		ProjectileSpawnPoint->GetComponentRotation());
-	
+
 	Projectile->SetOwner(this);
 }
 
-void ABasePawn::HandleDestruction() {
-	UE_LOG(LogTemp, Display, TEXT("Handle destruction from BasePawn"));
+void ABasePawn::HandleDestruction()
+{
+	if (DeathBlowParticle)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(this, DeathBlowParticle, GetActorLocation());
+	}
+	if (DeathSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
+	}
+	if (DeathShakeCameraClass)
+	{
+		GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(DeathShakeCameraClass);
+	}
 }

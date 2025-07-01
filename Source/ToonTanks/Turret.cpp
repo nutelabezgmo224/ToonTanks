@@ -44,7 +44,7 @@ void ATurret::CheckFireCondition()
 
 bool ATurret::TankInRange()
 {
-    if (!Tank)
+    if (!Tank || !Tank->bAlive)
         return false;
 
     float Distance = FVector::Dist(GetActorLocation(), Tank->GetActorLocation());
