@@ -70,7 +70,7 @@ void ATank::Tick(float DeltaTime)
 
     if (HasHit)
     {
-        DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 24, 8, FColor::Emerald);
+        //DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 24, 8, FColor::Emerald);
         this->RotateTurret(HitResult.ImpactPoint);
     }
 }
@@ -79,6 +79,4 @@ void ATank::HandleDestruction() {
     Super::HandleDestruction();
     SetActorHiddenInGame(true);
     SetActorTickEnabled(false);
-    DisableInput(TankPlayerController);
-    TankPlayerController->bShowMouseCursor = false;
 }
