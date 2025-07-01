@@ -1,0 +1,16 @@
+# IDE и системные файлы
+/.vscode
+.DS_Store
+
+# Папки UE5, которые можно безопасно игнорировать
+/DerivedDataCache
+/Intermediate
+/Saved
+/Binaries
+
+# Если используешь Visual Studio
+*.sln
+*.suo
+*.user
+*.VC.db
+*.VC.opendb
